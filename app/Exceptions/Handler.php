@@ -3,7 +3,16 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -40,12 +49,33 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
-     * @return \Illuminate\Http\Response
+     * @param  Request $request
+     * @param  Exception $exception
+     * @return JsonResponse|Response|SymfonyResponse
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof AuthenticationException) {
+            if (0 === strpos($request->path(), 'api/')) {
+                return \Response::json([
+                    'message' => $exception->getMessage()
+                ], HttpResponse::HTTP_UNAUTHORIZED);
+            }
+            return $this->unauthenticated($request, $exception);
+        }
+
+        if ($exception instanceof AuthorizationException) {
+            return \Response::json([
+                'message' => 'Not allowed to access this resource'
+            ], HttpResponse::HTTP_FORBIDDEN);
+        }
+
+        if ($exception instanceof NotFoundHttpException || $exception instanceof ModelNotFoundException) {
+            return \Response::json([
+                'message' => 'Resource not found'
+            ], HttpResponse::HTTP_NOT_FOUND);
+        }
+
         return parent::render($request, $exception);
     }
 }
