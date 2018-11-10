@@ -1,9 +1,8 @@
 version: "3"
-
 services:
   web:
     build:
-      context: .
+      context: ./
       dockerfile: docker/web/Dockerfile
     working_dir: /var/www
     volumes:
@@ -12,26 +11,27 @@ services:
       - 8080:80
     depends_on:
       - app
-    restart: always
 
   app:
     build:
-      context: .
+      context: ./
+      dockerfile: docker/app/Dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    restart: always
+    depends_on:
+      - db
+
+  app_test:
+    build:
+      context: ./
       dockerfile: docker/app/Dockerfile
     working_dir: /var/www
     volumes:
       - ./:/var/www
     depends_on:
       - db
-    restart: always
-
-  app_test:
-    build:
-      context: .
-      dockerfile: docker/app/Dockerfile
-    working_dir: /var/www
-    volumes:
-      - ./:/var/www
 
   pma:
     image: phpmyadmin/phpmyadmin
