@@ -1,0 +1,56 @@
+version: "3"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    ports:
+      - 8080:80
+    depends_on:
+      - app
+    restart: always
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - db
+    restart: always
+
+  app_test:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+
+  pma:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+    ports:
+      - 8081:80
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7.22
+    volumes:
+      - db_api_todo_laravel_data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=homestead
+      - MYSQL_USER=homestead
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=secret
+
+volumes:
+  db_api_todo_laravel_data:
