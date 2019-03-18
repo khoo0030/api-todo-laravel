@@ -9,6 +9,7 @@
     * [Setup Laravel](#setup-laravel)
 - [Schema](#schema)
 - [Endpoints](#endpoints)
+- [Running Tests](#running-tests)
 
 ## Todo Api Laravel
 This is a todo app api using [Laravel](https://laravel.com/).
@@ -109,5 +110,15 @@ todo table
 | POST | /api/v1/todos | Create a todo record | 
 | GET | /api/v1/todos | Get all todo records | 
 | GET | /api/v1/todos/{id} | Get a todo record | 
-| PATCH / PUT | /api/v1/todos/{id} | Update a todo record | 
+| PUT | /api/v1/todos/{id} | Update a todo record | 
 | DELETE | /api/v1/todos/{id} | Delete a todo record | 
+
+## Running Tests
+
+This project tests setup. Database and migrations must be setup before running tests. 
+
+Bash into the docker container and run:
+
+```
+./vendor/bin/phpunit
+```
