@@ -14,6 +14,13 @@
 ## Todo Api Laravel
 This is a todo app api using [Laravel](https://laravel.com/).
 
+This projects serves as an example to:
+- Build a REST API in PHP Laravel framework, with the following:
+    - MySQL as database
+- Test driven development mindset:
+    - Working with PHPUnit
+- Build in a Dockerized environment
+
 ## Getting Started using Docker
 
 Quickstart guide to getting Docker-based dev environment up and running.
